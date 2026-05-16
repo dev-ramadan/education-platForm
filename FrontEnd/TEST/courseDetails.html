@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تفاصيل الكورس</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Tahoma;
+}
+
+body{
+    background:#f1f5f9;
+}
+
+.container{
+    width:90%;
+    max-width:1200px;
+    margin:auto;
+    padding:40px 0;
+}
+
+/* Header */
+.header{
+    background:linear-gradient(135deg,#2563eb,#1e40af);
+    color:#fff;
+    padding:40px;
+    border-radius:18px;
+    margin-bottom:30px;
+}
+
+.header h1{
+    font-size:38px;
+    margin-bottom:15px;
+}
+
+.header p{
+    font-size:18px;
+    color:#dbeafe;
+}
+
+/* Grid */
+.grid{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:25px;
+}
+
+/* Left */
+.box{
+    background:#fff;
+    padding:25px;
+    border-radius:18px;
+    box-shadow:0 10px 20px rgba(0,0,0,.05);
+    margin-bottom:25px;
+}
+
+.box h2{
+    margin-bottom:18px;
+    color:#0f172a;
+}
+
+.lesson{
+    padding:15px;
+    border:1px solid #eee;
+    border-radius:12px;
+    margin-bottom:12px;
+    transition:.3s;
+}
+
+.lesson:hover{
+    background:#f8fafc;
+}
+
+.lesson span{
+    color:#64748b;
+    font-size:14px;
+}
+
+/* Right */
+.sidebar{
+    background:#fff;
+    padding:25px;
+    border-radius:18px;
+    box-shadow:0 10px 20px rgba(0,0,0,.05);
+    height:fit-content;
+}
+
+.price{
+    font-size:35px;
+    color:#16a34a;
+    font-weight:bold;
+    margin-bottom:15px;
+}
+
+.btn{
+    width:100%;
+    padding:14px;
+    background:#2563eb;
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:16px;
+    margin-bottom:15px;
+}
+
+.btn:hover{
+    background:#1d4ed8;
+}
+
+.info{
+    padding:12px 0;
+    border-bottom:1px solid #eee;
+}
+
+.info:last-child{
+    border:none;
+}
+
+/* Responsive */
+@media(max-width:900px){
+    .grid{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- Header -->
+<div class="header">
+
+</div>
+
+<!-- Grid -->
+<div class="grid">
+
+<!-- Left -->
+<div>
+
+<div class="box">
+<h2>وصف الكورس</h2>
+<p class="description"></p>
+</div>
+
+<div class="box">
+<h2>محتوى الكورس</h2>
+
+<div class="lesson">
+<strong>المحاضرة 1:</strong> مقدمة React
+<br>
+<span>20 دقيقة</span>
+</div>
+
+<div class="lesson">
+<strong>المحاضرة 2:</strong> Components
+<br>
+<span>35 دقيقة</span>
+</div>
+
+<div class="lesson">
+<strong>المحاضرة 3:</strong> useState & useEffect
+<br>
+<span>45 دقيقة</span>
+</div>
+
+<div class="lesson">
+<strong>المحاضرة 4:</strong> مشروع كامل
+<br>
+<span>60 دقيقة</span>
+</div>
+
+</div>
+
+<div class="box">
+<h2>التقييمات</h2>
+<p>⭐⭐⭐⭐⭐ 4.9 من 120 طالب</p>
+</div>
+
+</div>
+
+<!-- Right -->
+<div class="sidebar">
+
+<div class="price"></div>
+
+<button class="btn">اشترك الآن</button>
+
+<div class="info instructor"></div>
+<div class="info">🎓 الطلاب: 320</div>
+<div class="info">📚 عدد الدروس: 15</div>
+<div class="info">⏰ المدة: 8 ساعات</div>
+<div class="info">🌐 المستوى: Beginner</div>
+
+</div>
+
+</div>
+
+</div>
+<script src="courseDetail.js"></script>
+</body>
+</html>
