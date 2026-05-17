@@ -14,15 +14,17 @@ const bootstrap = async (app, express) => {
   app.use(express.json()); 
   // await connect.connectionDB();
   // await connect.syncModels();
-
-  app.use("/auth",userRouter)
-  app.use("/api",courseRouter)
-  app.use("/api",lessonRouter)
-  app.use("/api",quizRouter)
-  app.use("/api",questionRouter)
-  app.use("/api",optionRouter)
-  app.use("/api",enrollmentRouter)
-  app.use("/api",resultRouter)
+  app.get("/", (req, res) => {
+    res.json({ msg: "API working" });
+  });
+  // app.use("/auth",userRouter)
+  // app.use("/api",courseRouter)
+  // app.use("/api",lessonRouter)
+  // app.use("/api",quizRouter)
+  // app.use("/api",questionRouter)
+  // app.use("/api",optionRouter)
+  // app.use("/api",enrollmentRouter)
+  // app.use("/api",resultRouter)
 
  app.use( errorHandel)
 };
