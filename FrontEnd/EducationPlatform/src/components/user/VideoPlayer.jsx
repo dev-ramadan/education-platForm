@@ -4,7 +4,7 @@ import useVideoProtection from "../../hooks/useVideoProtection";
 /**
  * VideoPlayer — مشغل الفيديو مع الحماية من التسجيل ولقطة الشاشة
  */
-export default function VideoPlayer({ url, title }) {
+export default function VideoPlayer({ url, title, onMarkComplete }) {
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const { isHidden } = useVideoProtection(videoRef);
@@ -54,6 +54,14 @@ export default function VideoPlayer({ url, title }) {
         disablePictureInPicture
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
+        onTimeUpdate={(e) => {
+          const video = e.target;
+          if (video.duration && video.currentTime / video.duration > 0.5) {
+            if (onMarkComplete) {
+              onMarkComplete();
+            }
+          }
+        }}
         onContextMenu={(e) => e.preventDefault()}
       />
 

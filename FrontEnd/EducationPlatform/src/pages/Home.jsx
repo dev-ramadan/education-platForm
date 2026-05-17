@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-slate-50 overflow-hidden" dir="rtl">
+    <div className="relative min-h-screen bg-slate-50 overflow-hidden" dir="rtl">
       
       {/* Decorative Backgrounds */}
       <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
@@ -10,12 +10,12 @@ export default function Home() {
 
       {/* Hero Section */}
       <div className="relative z-10 pt-32 pb-16 px-4 text-center max-w-5xl mx-auto animate-slide-up">
-        <h1 className="text-5xl md:text-7xl font-black text-slate-800 mb-6 leading-tight">
+        <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-slate-800 mb-6 leading-tight">
           ارتقِ بمهاراتك مع <br className="md:hidden" />
           <span className="text-gradient">أفضل منصة تعليمية</span>
         </h1>
         
-        <p className="mt-6 text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+        <p className="mt-6 text-base sm:text-lg md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
           انضم لآلاف الطلاب وابدأ رحلتك في التعلم عن بُعد بأعلى جودة وتفاعل مباشر مع أفضل المحاضرين.
         </p>
 
