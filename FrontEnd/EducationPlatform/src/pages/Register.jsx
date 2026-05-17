@@ -18,7 +18,7 @@ export default function Register() {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await fetch(`${BASE_URL}auth/create`, {
+      const res = await fetch(`${BASE_URL}/auth/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
