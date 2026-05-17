@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { uploadVideoToCloudinary } from "../../utils/uploade";
-
+import {BASE_URL} from "../../api/config"
 export default function AddLessonModal({ courseId, setIsAddingLesson }) {
   const [lessonForm, setLessonForm] = useState({
     title: "",
@@ -27,7 +27,7 @@ export default function AddLessonModal({ courseId, setIsAddingLesson }) {
       );
 
       // ✅ إرسال للباك
-      const res = await fetch("http://localhost:3000/api/lesson", {
+      const res = await fetch(`${BASE_URL}/api/lesson`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

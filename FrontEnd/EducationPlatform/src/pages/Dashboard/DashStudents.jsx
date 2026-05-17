@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import {BASE_URL} from "../../api/config"
 export default function DashStudents() {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,7 +10,7 @@ export default function DashStudents() {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const res = await fetch("http://localhost:3000/auth/users", {
+        const res = await fetch(`${BASE_URL}/auth/users`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
