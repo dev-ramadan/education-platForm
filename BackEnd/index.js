@@ -18,7 +18,6 @@ const init = async () => {
   }
 };
 
-export default async function handler(req, res) {
-  await init();
-  return serverless(app)(req, res);
+export default function handler(req, res) {
+  res.status(200).json({ ok: true });
 }
