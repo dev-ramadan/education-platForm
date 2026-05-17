@@ -4,10 +4,19 @@ import { Link } from "react-router-dom";
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
     setIsLoggedIn(!!token);
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        console.error("Error parsing stored user:", e);
+      }
+    }
   }, []);
 
   const links = [
@@ -28,7 +37,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Links */}
-          <div className="hidden md:flex items-center space-x-8 space-x-reverse">
+          <div className="hidden md:flex items-center gap-6">
             {links.map((link) => (
               <Link
                 key={link.name}
@@ -40,9 +49,16 @@ export default function Navbar() {
             ))}
             
             {isLoggedIn ? (
-              <Link to="/profile" className="text-blue-600 font-black flex items-center gap-2 hover:bg-blue-50 px-4 py-2 rounded-xl transition-all">
-                <span>👤</span> ملفي الشخصي
-              </Link>
+              <div className="flex items-center gap-4">
+                {(user?.role === "admin" || user?.role === "instructor") && (
+                  <Link to="/dashboard" className="text-indigo-600 font-black flex items-center gap-2 hover:bg-indigo-50 px-4 py-2 rounded-xl transition-all">
+                    <span>📊</span> لوحة التحكم
+                  </Link>
+                )}
+                <Link to="/profile" className="text-blue-600 font-black flex items-center gap-2 hover:bg-blue-50 px-4 py-2 rounded-xl transition-all">
+                  <span>👤</span> ملفي الشخصي
+                </Link>
+              </div>
             ) : (
               <Link to="/login" className="text-slate-600 font-bold hover:text-blue-600 transition-colors">
                 تسجيل الدخول
@@ -88,9 +104,16 @@ export default function Navbar() {
             ))}
             
             {isLoggedIn && (
-              <Link to="/profile" onClick={() => setOpen(false)} className="text-blue-600 font-bold">
-                ملفي الشخصي
-              </Link>
+              <>
+                {(user?.role === "admin" || user?.role === "instructor") && (
+                  <Link to="/dashboard" onClick={() => setOpen(false)} className="text-indigo-600 font-bold flex items-center gap-2">
+                    <span>📊</span> لوحة التحكم
+                  </Link>
+                )}
+                <Link to="/profile" onClick={() => setOpen(false)} className="text-blue-600 font-bold flex items-center gap-2">
+                  <span>👤</span> ملفي الشخصي
+                </Link>
+              </>
             )}
 
             {!isLoggedIn && (
