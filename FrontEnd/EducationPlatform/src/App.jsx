@@ -11,3 +11,4 @@ function App() {
 }
 
 export default App
+//http://ec2-51-21-180-254.eu-north-1.compute.amazonaws.com:3000
