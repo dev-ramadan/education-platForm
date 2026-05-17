@@ -1,6 +1,8 @@
 import { BASE_URL } from "./config";
 
 
+
+
 export const fetchCourses = async () => {
   const res = await fetch(`${BASE_URL}/api/course`);
   const data = await res.json();

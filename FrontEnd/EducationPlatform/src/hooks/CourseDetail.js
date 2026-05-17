@@ -15,7 +15,7 @@ export default function useCourseDetails() {
     try {
       setLoading(true);
 
-      const res = await fetch(`http://localhost:3000/api/course/${id}`);
+      const res = await fetch(`${BASE_URL}/api/course/${id}`);
       const data = await res.json();
 
       const courseData = data.data;
@@ -23,7 +23,7 @@ export default function useCourseDetails() {
 
       // GET INSTRUCTOR
       const instructorRes = await fetch(
-        `http://localhost:3000/auth/instructor/${courseData.instructorId}`
+        `${BASE_URL}/auth/instructor/${courseData.instructorId}`
       );
 
       const instructorData = await instructorRes.json();
@@ -41,7 +41,7 @@ export default function useCourseDetails() {
       const token = localStorage.getItem("token");
 
       const res = await fetch(
-        `http://localhost:3000/api/enrollment/my-courses/${course.id}`,
+        `${BASE_URL}/api/enrollment/my-courses/${course.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

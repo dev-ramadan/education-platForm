@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { BASE_URL } from "../api/config";
 
 export default function useCourses() {
   const [courses, setCourses] = useState([]);
@@ -9,7 +10,7 @@ export default function useCourses() {
     try {
       setLoading(true);
 
-      const res = await fetch("http://localhost:3000/api/course");
+      const res = await fetch(`${BASE_URL}/api/course`);
       const data = await res.json();
 
       setCourses(data.data);
@@ -26,7 +27,7 @@ export default function useCourses() {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch("http://localhost:3000/api/course", {
+      const res = await fetch(`${BASE_URL}/api/course`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
