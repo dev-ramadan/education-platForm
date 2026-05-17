@@ -5,7 +5,7 @@ import VideoPlayer from "../user/VideoPlayer";
 /**
  * VideoSection — قسم عرض الدرس (فيديو + تفاصيل + التقدم التلقائي)
  */
-export default function VideoSection({ lesson, course, completedLessons, onMarkComplete }) {
+export default function VideoSection({ lesson, course, completedLessons, onMarkComplete, onUpdateProgress }) {
   const [hasTriggeredComplete, setHasTriggeredComplete] = useState(false);
 
   // إعادة ضبط حالة التفعيل عند تغيير الدرس لتجنب تكرار استدعاءات API
@@ -35,6 +35,10 @@ export default function VideoSection({ lesson, course, completedLessons, onMarkC
               height="100%"
               controls
               onProgress={(state) => {
+                const percent = Math.round(state.played * 100);
+                if (onUpdateProgress) {
+                  onUpdateProgress(lesson.id, percent);
+                }
                 if (state.played > 0.5) {
                   handleMarkComplete();
                 }
@@ -46,6 +50,11 @@ export default function VideoSection({ lesson, course, completedLessons, onMarkC
             url={lesson.video_url} 
             title={lesson.title} 
             onMarkComplete={handleMarkComplete} 
+            onProgress={(percent) => {
+              if (onUpdateProgress) {
+                onUpdateProgress(lesson.id, percent);
+              }
+            }}
           />
         )}
       </div>

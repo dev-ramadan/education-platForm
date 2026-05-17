@@ -4,6 +4,7 @@
 export default function LessonSidebar({
   course,
   completedLessons,
+  lessonProgress = {},
   currentItem,
   currentType,
   progressPercent,
@@ -76,19 +77,31 @@ export default function LessonSidebar({
           <div className="space-y-2">
             {course.Lessons?.map((lesson) => {
               const isComplete = completedLessons.includes(lesson.id);
+              const lessonPercent = isComplete ? 100 : (lessonProgress[lesson.id] || 0);
               const isActive = currentType === "lesson" && currentItem?.id === lesson.id;
               return (
                 <button
                   key={lesson.id}
                   onClick={() => onSelectLesson(lesson)}
-                  className={`w-full text-right p-3 rounded-xl transition-all flex items-center justify-between ${
+                  className={`w-full text-right p-3 rounded-xl transition-all flex items-center justify-between gap-3 ${
                     isActive
                       ? "bg-blue-50 border-blue-500 border text-blue-700 font-bold"
                       : "bg-slate-50 hover:bg-slate-100 text-slate-700"
                   }`}
                 >
-                  <span className="truncate pr-2">{lesson.title}</span>
-                  {isComplete && <span className="text-green-500 font-bold text-lg">✓</span>}
+                  <span className="truncate pr-2 flex-1 text-sm">{lesson.title}</span>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                      isComplete 
+                        ? "bg-green-100 text-green-700" 
+                        : lessonPercent > 0 
+                          ? "bg-blue-100 text-blue-700 animate-pulse" 
+                          : "bg-slate-200 text-slate-500"
+                    }`}>
+                      {lessonPercent}%
+                    </span>
+                    {isComplete && <span className="text-green-500 font-bold text-base">✓</span>}
+                  </div>
                 </button>
               );
             })}

@@ -19,7 +19,7 @@ export default function CourseDetails() {
   const [showSubscribe, setShowSubscribe] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const { completedLessons, markComplete } = useProgress(enrollmentData, course?.id);
+  const { completedLessons, markComplete, lessonProgress, updateLessonProgress } = useProgress(enrollmentData, course?.id);
   const { answers, quizSubmitted, quizScore, timeLeft, handleOptionSelect, handleSubmit } =
     useQuiz(activeItem, activeType);
 
@@ -30,8 +30,16 @@ export default function CourseDetails() {
   // ── واجهة الطالب المشترك ──
   if (isEnrolled === "active") {
     const totalLessons = course.Lessons?.length || 0;
-    const progressPercent =
-      totalLessons > 0 ? Math.round((completedLessons.length / totalLessons) * 100) : 0;
+
+    // دالة لجلب تقدم درس معين (100% إذا اكتمل، وإلا من التقدم المحلي المخزن)
+    const getLessonProgress = (lessonId) => {
+      if (completedLessons.includes(lessonId)) return 100;
+      return lessonProgress[lessonId] || 0;
+    };
+
+    // حساب نسبة الإنجاز الكلية بناء على متوسط نسب إنجاز جميع الدروس
+    const totalProgress = course.Lessons?.reduce((sum, lsn) => sum + getLessonProgress(lsn.id), 0) || 0;
+    const progressPercent = totalLessons > 0 ? Math.round(totalProgress / totalLessons) : 0;
     const isCompleted = progressPercent === 100 && totalLessons > 0;
 
     const currentItem = activeItem || course.Lessons?.[0];
@@ -57,6 +65,7 @@ export default function CourseDetails() {
         <LessonSidebar
           course={course}
           completedLessons={completedLessons}
+          lessonProgress={lessonProgress}
           currentItem={currentItem}
           currentType={currentType}
           progressPercent={progressPercent}
@@ -86,6 +95,7 @@ export default function CourseDetails() {
               course={course}
               completedLessons={completedLessons}
               onMarkComplete={markComplete}
+              onUpdateProgress={updateLessonProgress}
             />
           ) : currentType === "quiz" && currentItem ? (
             <QuizSection
