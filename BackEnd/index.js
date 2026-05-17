@@ -5,6 +5,6 @@ const app = express()
 app.use(cors());
 const port = process.env.PORT || 3000
 bootstrap(app, express)
-app.listen(port , ()=>{
-    console.log("server is running on port " , port);
+app.listen(port, "0.0.0.0", () => {
+    console.log("server is running on port", port);
 });
