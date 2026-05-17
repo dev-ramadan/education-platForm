@@ -17,6 +17,7 @@ export default function CourseDetails() {
   const [activeType, setActiveType] = useState("lesson");
   const [showCertificate, setShowCertificate] = useState(false);
   const [showSubscribe, setShowSubscribe] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const { completedLessons, markComplete } = useProgress(enrollmentData, course?.id);
   const { answers, quizSubmitted, quizScore, timeLeft, handleOptionSelect, handleSubmit } =
@@ -38,6 +39,21 @@ export default function CourseDetails() {
 
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row pt-20" dir="rtl">
+        {/* Mobile Sticky Bar to Toggle Content Sidebar */}
+        <div className="md:hidden bg-white border-b border-slate-200 p-4 sticky top-20 z-20 flex justify-between items-center shadow-sm">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="flex items-center gap-2 bg-indigo-50 text-indigo-700 font-bold px-4 py-2.5 rounded-xl border border-indigo-100 transition-all active:scale-95"
+            title="محتوى الكورس"
+          >
+            📚 محتوى الكورس ({progressPercent}%)
+          </button>
+          <span className="text-slate-700 font-bold text-sm truncate pl-2 max-w-[180px]">
+            {currentType === "quiz" ? "📝 " : "🎥 "}
+            {currentItem?.title || "تحميل..."}
+          </span>
+        </div>
+
         <LessonSidebar
           course={course}
           completedLessons={completedLessons}
@@ -45,9 +61,22 @@ export default function CourseDetails() {
           currentType={currentType}
           progressPercent={progressPercent}
           isCompleted={isCompleted}
-          onSelectLesson={(lesson) => { setActiveItem(lesson); setActiveType("lesson"); }}
-          onSelectQuiz={(quiz) => { setActiveItem(quiz); setActiveType("quiz"); }}
-          onShowCertificate={() => setShowCertificate(true)}
+          onSelectLesson={(lesson) => {
+            setActiveItem(lesson);
+            setActiveType("lesson");
+            setSidebarOpen(false);
+          }}
+          onSelectQuiz={(quiz) => {
+            setActiveItem(quiz);
+            setActiveType("quiz");
+            setSidebarOpen(false);
+          }}
+          onShowCertificate={() => {
+            setShowCertificate(true);
+            setSidebarOpen(false);
+          }}
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
         />
 
         <div className="flex-1 p-4 md:p-8 overflow-y-auto relative">

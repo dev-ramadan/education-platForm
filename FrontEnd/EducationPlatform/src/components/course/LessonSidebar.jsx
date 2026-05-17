@@ -11,9 +11,38 @@ export default function LessonSidebar({
   onSelectLesson,
   onSelectQuiz,
   onShowCertificate,
+  isOpen,
+  onClose,
 }) {
   return (
-    <div className="w-full md:w-80 bg-white border-l border-slate-200 p-6 overflow-y-auto hidden md:block z-10 shadow-lg">
+    <>
+      {/* Mobile Backdrop Overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm md:hidden transition-opacity"
+          onClick={onClose}
+        />
+      )}
+
+      {/* Sidebar Container */}
+      <div
+        className={`fixed inset-y-0 right-0 z-50 w-80 bg-white shadow-xl transition-transform duration-300 overflow-y-auto p-6 md:translate-x-0 md:static md:z-10 md:shadow-lg md:block md:w-80 border-l border-slate-200 ${
+          isOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        {/* Mobile Header with Close Button */}
+        <div className="flex justify-between items-center md:hidden mb-6 border-b border-slate-100 pb-3">
+          <h2 className="text-lg font-black text-slate-800">محتوى الكورس</h2>
+          <button
+            onClick={onClose}
+            className="p-1 rounded-lg hover:bg-slate-100 text-slate-500"
+            title="إغلاق القائمة"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
       <h2 className="text-xl font-black text-slate-800 mb-4">محتوى الكورس</h2>
 
       {/* Progress Bar */}
@@ -99,5 +128,6 @@ export default function LessonSidebar({
         </div>
       </div>
     </div>
+  </>
   );
 }

@@ -10,7 +10,7 @@ export default function useQuiz(activeItem, activeType) {
   const [answers, setAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [quizScore, setQuizScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(null);
 
   // إعادة الضبط عند تغيير الامتحان
   useEffect(() => {
@@ -24,11 +24,13 @@ export default function useQuiz(activeItem, activeType) {
 
   // التايمر
   useEffect(() => {
-    if (activeType === "quiz" && !quizSubmitted && timeLeft > 0) {
-      const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
-      return () => clearInterval(timer);
-    } else if (activeType === "quiz" && !quizSubmitted && timeLeft === 0 && activeItem) {
-      handleSubmit();
+    if (activeType === "quiz" && !quizSubmitted && timeLeft !== null) {
+      if (timeLeft > 0) {
+        const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
+        return () => clearInterval(timer);
+      } else if (timeLeft === 0 && activeItem) {
+        handleSubmit();
+      }
     }
   }, [timeLeft, activeType, quizSubmitted, activeItem]);
 
