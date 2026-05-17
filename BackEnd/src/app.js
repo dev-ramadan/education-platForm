@@ -12,8 +12,8 @@ import { resultRouter } from "./routes/result.js";
 
 const bootstrap = async (app, express) => {
   app.use(express.json()); 
-  await connect.connectionDB();
-  await connect.syncModels();
+  // await connect.connectionDB();
+  // await connect.syncModels();
 
   app.use("/auth",userRouter)
   app.use("/api",courseRouter)
