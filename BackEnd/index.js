@@ -1,9 +1,10 @@
-import express from "express"
+import express from "express";
 import cors from "cors";
-import bootstrap from "./src/app.js"
+import bootstrap from "./src/app.js";
 
-const app = express()
+const app = express();
 
+// ✅ CORS
 app.use(cors({
     origin: [
         "https://edu-plat-form.vercel.app",
@@ -13,14 +14,25 @@ app.use(cors({
     credentials: true
 }));
 
-app.options('*', cors()); // مهم جدًا للـ preflight
+// ✅ مهم للـ preflight
+app.options('*', cors());
 
-app.use(express.json()); // مهم لو بتبعت JSON
+// ✅ JSON
+app.use(express.json());
 
-bootstrap(app, express)
+// ✅ route بسيط للـ health check
+app.get("/", (req, res) => {
+    res.send("Server is running 🚀");
+});
 
-const port = process.env.PORT || 3000
+// ✅ شغل السيرفر الأول
+const port = process.env.PORT || 3000;
 
 app.listen(port, "0.0.0.0", () => {
     console.log("server is running on port", port);
+});
+
+// ✅ بعد كده شغل الـ bootstrap
+bootstrap(app, express).catch(err => {
+    console.error("Bootstrap error:", err);
 });
