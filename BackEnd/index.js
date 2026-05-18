@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import bootstrap from "./src/app.js";
+import Serverless from "serverless-http";
 
 const app = express();
 
@@ -26,8 +27,10 @@ app.get("/", (req, res) => {
 // ✅ 4. bootstrap AFTER middleware
 bootstrap(app, express);
 
-const port = process.env.PORT || 3000;
+// const port = process.env.PORT || 3000;
 
-app.listen(port, "0.0.0.0", () => {
-    console.log("server is running on port", port);
-});
+// app.listen(port, "0.0.0.0", () => {
+//     console.log("server is running on port", port);
+// });
+
+export default Serverless(app);
