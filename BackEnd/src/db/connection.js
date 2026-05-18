@@ -1,29 +1,37 @@
-import { Sequelize } from 'sequelize';
-import dotenv from 'dotenv';
+import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
+
 dotenv.config();
 
-export const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT || 3306,
-    dialect: "mysql",
-  }
-);
+// ✅ استخدام connection string بدل (DB_NAME / USER / PASS)
+export const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: "postgres",
+  protocol: "postgres",
+  logging: false,
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
+    },
+  },
+});
 
-
+// ✅ اتصال بالداتا بيز
 export const connectionDB = async () => {
-   try {
-      await sequelize.authenticate()
-      console.log("db connection successfully");
+  try {
+    await sequelize.authenticate();
+    console.log("Database connected ✅");
+  } catch (error) {
+    console.log("DB connection error ❌", error.message);
+  }
+};
 
-   } catch (error) {
-      console.log("fail to connected ", error.message);
-   }
-}
-
+// ✅ إنشاء الجداول
 export const syncModels = async () => {
-   await sequelize.sync()
-}
+  try {
+    await sequelize.sync({ alter: true }); // تقدر تشيل alter بعد كده
+    console.log("Models synced ✅");
+  } catch (error) {
+    console.log("Sync error ❌", error.message);
+  }
+};

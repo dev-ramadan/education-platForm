@@ -18,9 +18,6 @@ const bootstrap = async (app, express) => {
     // ✅ الاتصال بالداتا بيز
     await connect.connectionDB();
     await connect.syncModels();
-
-    console.log("Database connected ✅");
-
     // ✅ Routes
     app.use("/auth", userRouter);
     app.use("/api", courseRouter);
