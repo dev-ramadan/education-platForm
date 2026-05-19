@@ -1,14 +1,20 @@
-import User  from"./User.js";
-import Result  from"./Result.js";
-import Payment  from"./Payment.js";
-import Course  from"./Course.js";
-import Lesson  from"./Lesson.js";
-import Question  from"./Question.js";
-import Quiz  from"./Quiz.js";
-import Option  from"./Option.js";
-import Enrollment from "./Enrollment.js";
+import {
+  User,
+  Result,
+  Payment,
+  Course,
+  Lesson,
+  Question,
+  Quiz,
+  Option,
+  Enrollment
+} from "./index";
 
+// العلاقات زي ما هي
+User.hasMany(Result, { foreignKey: "userId" });
+Result.belongsTo(User, { foreignKey: "userId" });
 
+// باقي العلاقات...
 // 👤 1. User ↔ Result
 User.hasMany(Result, {
   foreignKey: "userId",

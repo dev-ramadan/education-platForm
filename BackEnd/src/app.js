@@ -1,4 +1,9 @@
 import * as connect from "./db/connection.js";
+
+// ✅ مهم جدًا: نحمل الموديلات الأول
+import "./db/models/index.js";
+
+// ✅ بعد كده العلاقات
 import "./db/models/relationship.js";
 
 import { courseRouter } from "./routes/course.js";
@@ -13,11 +18,13 @@ import { resultRouter } from "./routes/result.js";
 import { errorHandel } from "./utils/errorHandeler.js";
 
 const bootstrap = async (app, express) => {
-
   try {
     // ✅ الاتصال بالداتا بيز
     await connect.connectionDB();
+
+    // ✅ sync بعد ما العلاقات تتحمل
     await connect.syncModels();
+
     // ✅ Routes
     app.use("/auth", userRouter);
     app.use("/api", courseRouter);
