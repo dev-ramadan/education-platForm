@@ -1,14 +1,13 @@
-import {
-  User,
-  Result,
-  Payment,
-  Course,
-  Lesson,
-  Question,
-  Quiz,
-  Option,
-  Enrollment
-} from "./index.js";
+import Course from "./Course.js";
+import Enrollment from "./Enrollment.js";
+import Lesson from "./Lesson.js";
+import Option from "./Option.js";
+import Payment from "./Payment.js";
+import Question from "./Question.js";
+import Quiz from "./Quiz.js";
+import Result from "./Result.js";
+import User from "./User.js";
+
 
 // 👤 1. User ↔ Result
 User.hasMany(Result, { foreignKey: "userId" });

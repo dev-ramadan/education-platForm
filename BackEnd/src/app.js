@@ -1,9 +1,4 @@
 import * as connect from "./db/connection.js";
-
-// ✅ مهم جدًا: نحمل الموديلات الأول
-import "./db/models/index.js";
-
-// ✅ بعد كده العلاقات
 import "./db/models/relationship.js";
 
 import { courseRouter } from "./routes/course.js";
@@ -17,30 +12,24 @@ import { resultRouter } from "./routes/result.js";
 
 import { errorHandel } from "./utils/errorHandeler.js";
 
-const bootstrap = async (app, express) => {
-  try {
-    // ✅ الاتصال بالداتا بيز
-    await connect.connectionDB();
+const bootstrap = (app, express) => {
+  // ✅ الاتصال بالداتا بيز وتزامن الجداول بشكل غير متزامن في الخلفية لضمان عدم تأخير تعريف المسارات
+  connect.connectionDB()
+    .then(() => connect.syncModels())
+    .catch((error) => console.error("Database connection/sync error:", error));
 
-    // ✅ sync بعد ما العلاقات تتحمل
-    await connect.syncModels();
+  // ✅ Routes (تعريف متزامن للمسارات لضمان عملها فوراً على Vercel)
+  app.use("/auth", userRouter);
+  app.use("/api", courseRouter);
+  app.use("/api", lessonRouter);
+  app.use("/api", quizRouter);
+  app.use("/api", questionRouter);
+  app.use("/api", optionRouter);
+  app.use("/api", enrollmentRouter);
+  app.use("/api", resultRouter);
 
-    // ✅ Routes
-    app.use("/auth", userRouter);
-    app.use("/api", courseRouter);
-    app.use("/api", lessonRouter);
-    app.use("/api", quizRouter);
-    app.use("/api", questionRouter);
-    app.use("/api", optionRouter);
-    app.use("/api", enrollmentRouter);
-    app.use("/api", resultRouter);
-
-    // ✅ Error handler
-    app.use(errorHandel);
-
-  } catch (error) {
-    console.error("Error in bootstrap:", error);
-  }
+  // ✅ Error handler
+  app.use(errorHandel);
 };
 
 export default bootstrap;
