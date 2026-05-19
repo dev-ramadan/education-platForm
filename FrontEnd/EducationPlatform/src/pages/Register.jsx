@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { BASE_URL } from "../api/config";
+import { toast } from "react-hot-toast";
+
 export default function Register() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -30,15 +32,15 @@ export default function Register() {
       setLoading(false);
 
       if (res.ok) {
-        alert("تم إنشاء الحساب بنجاح 🎉");
+        toast.success("تم إنشاء الحساب بنجاح 🎉");
         navigate("/login");
       } else {
-        alert(data.message || "خطأ في إنشاء الحساب");
+        toast.error(data.message || "خطأ في إنشاء الحساب");
       }
     } catch (err) {
       console.log(err);
       setLoading(false);
-      alert("مشكلة في الاتصال بالخادم");
+      toast.error("مشكلة في الاتصال بالخادم");
     }
   };
 

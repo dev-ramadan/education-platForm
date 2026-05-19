@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createQuiz, createQuestion, createOptions } from "../../api/quiz.api";
 import { fetchCourses } from "../../api/courses.api";
 import { useAuth } from "../../hooks/useAuth";
+import { toast } from "react-hot-toast";
 
 const INITIAL_OPTIONS = [
   { option: "", correct_answer: true },
@@ -31,18 +32,18 @@ export default function DashQuiz() {
 
   const handleExamSubmit = async (e) => {
     e.preventDefault();
-    if (!exam.title || !exam.courseId || !exam.time) return alert("من فضلك املأ كل البيانات");
+    if (!exam.title || !exam.courseId || !exam.time) return toast.error("من فضلك املأ كل البيانات");
     try {
       setLoading(true);
       const data = await createQuiz(
         { title: exam.title, courseId: Number(exam.courseId), time: Number(exam.time) },
         token
       );
-      alert(`تم إضافة الامتحان بنجاح ✅ (رقم الامتحان: ${data?.id})`);
+      toast.success(`تم إضافة الامتحان بنجاح ✅ (رقم الامتحان: ${data?.id})`);
       setCreatedQuizId(data?.id);
       setStep(2);
     } catch (err) {
-      alert(err.message || "حصل خطأ");
+      toast.error(err.message || "حصل خطأ");
     } finally {
       setLoading(false);
     }
@@ -61,16 +62,16 @@ export default function DashQuiz() {
   const handleQuestionSubmit = async (e) => {
     e.preventDefault();
     if (!question || options.some((o) => !o.option))
-      return alert("من فضلك أدخل نص السؤال وجميع الاختيارات الأربعة");
+      return toast.error("من فضلك أدخل نص السؤال وجميع الاختيارات الأربعة");
     try {
       setQLoading(true);
       const newQuestion = await createQuestion({ quizId: createdQuizId, question }, token);
       await createOptions({ questionId: newQuestion.id, options }, token);
-      alert("تم إضافة السؤال والاختيارات بنجاح ✅");
+      toast.success("تم إضافة السؤال والاختيارات بنجاح ✅");
       setQuestion("");
       setOptions(INITIAL_OPTIONS);
     } catch (err) {
-      alert(err.message || "حصل خطأ");
+      toast.error(err.message || "حصل خطأ");
     } finally {
       setQLoading(false);
     }

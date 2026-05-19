@@ -5,6 +5,7 @@ import { useAuth } from "../../hooks/useAuth";
 import AddLesson from "../../components/admin/AddLesson";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import Modal from "../../components/common/Modal";
+import { toast } from "react-hot-toast";
 
 export default function DashCourse() {
   const { courses, loading, addCourse } = useCourses();
@@ -18,13 +19,13 @@ export default function DashCourse() {
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async () => {
-    if (!form.title || !form.description || !form.price) return alert("يرجى تعبئة الحقول");
+    if (!form.title || !form.description || !form.price) return toast.error("يرجى تعبئة الحقول");
     const result = await addCourse(form);
     if (result.success) {
-      alert("تمت إضافة الكورس بنجاح 🚀");
+      toast.success("تمت إضافة الكورس بنجاح 🚀");
       setForm({ title: "", description: "", price: "" });
     } else {
-      alert(result.message);
+      toast.error(result.message);
     }
   };
 
@@ -32,10 +33,12 @@ export default function DashCourse() {
     if (!window.confirm("هل أنت متأكد من حذف هذا الكورس وجميع دروسه؟")) return;
     try {
       await deleteCourse(courseId, token);
-      alert("تم حذف الكورس بنجاح");
-      window.location.reload();
+      toast.success("تم حذف الكورس بنجاح");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
     } catch (err) {
-      alert(err.message || "فشل الحذف");
+      toast.error(err.message || "فشل الحذف");
     }
   };
 
@@ -53,10 +56,10 @@ export default function DashCourse() {
     if (!window.confirm("هل أنت متأكد من حذف هذا الدرس؟")) return;
     try {
       await deleteLesson(lessonId, token);
-      alert("تم حذف الدرس بنجاح");
+      toast.success("تم حذف الدرس بنجاح");
       setCourseLessons((prev) => prev.filter((l) => l.id !== lessonId));
     } catch (err) {
-      alert(err.message || "فشل الحذف");
+      toast.error(err.message || "فشل الحذف");
     }
   };
 

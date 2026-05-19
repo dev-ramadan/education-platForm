@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { uploadVideoToCloudinary } from "../../utils/uploade";
-import {BASE_URL} from "../../api/config"
+import { BASE_URL } from "../../api/config";
+import { toast } from "react-hot-toast";
+
 export default function AddLessonModal({ courseId, setIsAddingLesson }) {
   const [lessonForm, setLessonForm] = useState({
     title: "",
@@ -14,7 +16,7 @@ export default function AddLessonModal({ courseId, setIsAddingLesson }) {
 
   const handleAddLesson = async () => {
     if (!lessonForm.title || !videoFile) {
-      return alert("يرجى إدخال البيانات واختيار فيديو");
+      return toast.error("يرجى إدخال البيانات واختيار فيديو");
     }
 
     try {
@@ -44,7 +46,7 @@ export default function AddLessonModal({ courseId, setIsAddingLesson }) {
 
       if (!res.ok) throw new Error(data.message);
 
-      alert("تم إضافة الدرس بنجاح ✅");
+      toast.success("تم إضافة الدرس بنجاح ✅");
 
       // Reset
       setLessonForm({ title: "" });
@@ -53,7 +55,7 @@ export default function AddLessonModal({ courseId, setIsAddingLesson }) {
       setIsAddingLesson(false);
 
     } catch (err) {
-      alert(err.message || "حصل خطأ");
+      toast.error(err.message || "حصل خطأ");
     } finally {
       setAddingLoading(false);
     }

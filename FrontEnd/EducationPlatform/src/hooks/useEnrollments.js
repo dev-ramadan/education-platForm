@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { fetchAllEnrollments, approveEnrollment, rejectEnrollment } from "../api/enrollment.api";
 import { useAuth } from "./useAuth";
+import { toast } from "react-hot-toast";
 
 /**
  * useEnrollments — إدارة طلبات الاشتراك (للأدمن)
@@ -29,8 +30,9 @@ export default function useEnrollments() {
       setEnrollments((prev) =>
         prev.map((item) => (item.id === id ? { ...item, status: "active" } : item))
       );
+      toast.success("تم قبول الطلب بنجاح ✅");
     } catch {
-      alert("حدث خطأ أثناء قبول الطلب");
+      toast.error("حدث خطأ أثناء قبول الطلب");
     }
   };
 
@@ -41,8 +43,9 @@ export default function useEnrollments() {
       setEnrollments((prev) =>
         prev.map((item) => (item.id === id ? { ...item, status: "rejected" } : item))
       );
+      toast.success("تم رفض الطلب بنجاح");
     } catch {
-      alert("حدث خطأ أثناء رفض الطلب");
+      toast.error("حدث خطأ أثناء رفض الطلب");
     }
   };
 

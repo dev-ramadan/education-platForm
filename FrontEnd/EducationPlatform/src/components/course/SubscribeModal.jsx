@@ -2,6 +2,7 @@ import { useState } from "react";
 import Modal from "../common/Modal";
 import { createEnrollment } from "../../api/enrollment.api";
 import { useAuth } from "../../hooks/useAuth";
+import { toast } from "react-hot-toast";
 
 /**
  * SubscribeModal — مودال الاشتراك في الكورس
@@ -12,23 +13,25 @@ export default function SubscribeModal({ isOpen, onClose, course }) {
   const [btnLoading, setBtnLoading] = useState(false);
 
   const handleSubscribe = async () => {
-    if (!phone) return alert("الرجاء إدخال رقم الهاتف");
+    if (!phone) return toast.error("الرجاء إدخال رقم الهاتف");
     
     // التحقق من أن رقم الهاتف مصري صحيح ومكون من 11 رقماً ويبدأ بـ 01
     const phoneRegex = /^01[0125][0-9]{8}$/;
     if (!phoneRegex.test(phone)) {
-      return alert("يرجى إدخال رقم هاتف مصري صحيح مكون من 11 رقم ويبدأ بـ 01 (مثال: 01012345678)");
+      return toast.error("يرجى إدخال رقم هاتف مصري صحيح مكون من 11 رقم ويبدأ بـ 01 (مثال: 01012345678)");
     }
 
     try {
       setBtnLoading(true);
       await createEnrollment({ phone, courseId: course.id }, token);
-      alert("تم إرسال طلب الاشتراك بنجاح ✅");
-      onClose();
-      setPhone("");
-      window.location.reload();
+      toast.success("تم إرسال طلب الاشتراك بنجاح ✅");
+      setTimeout(() => {
+        onClose();
+        setPhone("");
+        window.location.reload();
+      }, 1500);
     } catch (err) {
-      alert(err.message || "حصل خطأ");
+      toast.error(err.message || "حصل خطأ");
     } finally {
       setBtnLoading(false);
     }

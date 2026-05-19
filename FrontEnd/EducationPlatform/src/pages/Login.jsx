@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import {BASE_URL} from "../api/config"
+import { BASE_URL } from "../api/config";
+import { toast } from "react-hot-toast";
+
 export default function Login() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -37,18 +39,20 @@ export default function Login() {
         localStorage.setItem("token", data.data.token);
         localStorage.setItem("user", JSON.stringify(userData));
 
+        toast.success("تم تسجيل الدخول بنجاح 🎉");
+
         if (data.data?.role === "admin" || data.data?.role === "instructor") {
           navigate("/dashboard");
         } else {
           navigate("/");
         }
       } else {
-        alert(data.message || "خطأ في تسجيل الدخول");
+        toast.error(data.message || "خطأ في تسجيل الدخول");
       }
     } catch (err) {
       console.log(err);
       setLoading(false);
-      alert("مشكلة في الاتصال بالخادم");
+      toast.error("مشكلة في الاتصال بالخادم");
     }
   };
 

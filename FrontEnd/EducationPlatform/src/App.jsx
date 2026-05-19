@@ -1,11 +1,12 @@
 import { RouterProvider } from "react-router-dom"
-import Navbar from "./components/user/Nav"
+import { Toaster } from "react-hot-toast"
 import { router } from "../route"
 
 function App() {
   return (
     <>
     <RouterProvider router={router}/>
+    <Toaster position="top-center" reverseOrder={false} />
     </>
   )
 }
