@@ -1,11 +1,10 @@
 import express from "express";
 import cors from "cors";
 import bootstrap from "./src/app.js";
-import serverless from "serverless-http";
 
 const app = express();
 
-// ✅ CORS لازم يكون قبل أي routes
+// ✅ 1. CORS FIRST (مهم جدًا جدًا)
 app.use(cors({
     origin: [
         "https://edu-plat-form.vercel.app",
@@ -16,22 +15,19 @@ app.use(cors({
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-// مهم للـ preflight في serverless
-app.options("*", cors());
-
-// JSON parser
+// ✅ 2. JSON parser
 app.use(express.json());
 
-// health check
+// ✅ 3. health check
 app.get("/", (req, res) => {
-    res.status(200).json({
-        status: "ok",
-        message: "Server is running 🚀"
-    });
+    res.send("Server is running 🚀");
 });
 
-// bootstrap (لازم await أو promise-safe)
+// ✅ 4. bootstrap AFTER middleware
 bootstrap(app, express);
 
-// ❗ مهم: export handler مش app
-export const handler = serverless(app);
+const port = process.env.PORT || 3000;
+
+app.listen(port, "0.0.0.0", () => {
+    console.log("server is running on port", port);
+});
