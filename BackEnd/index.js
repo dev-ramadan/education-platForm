@@ -28,6 +28,7 @@ bootstrap(app, express);
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, "0.0.0.0", () => {
-    console.log("server is running on port", port);
-});
+module.exports = {app}
+// app.listen(port, "0.0.0.0", () => {
+//     console.log("server is running on port", port);
+// });
