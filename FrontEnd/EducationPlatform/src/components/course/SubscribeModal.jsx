@@ -12,7 +12,14 @@ export default function SubscribeModal({ isOpen, onClose, course }) {
   const [btnLoading, setBtnLoading] = useState(false);
 
   const handleSubscribe = async () => {
-    if (!phone) return alert("ادخل رقم الهاتف");
+    if (!phone) return alert("الرجاء إدخال رقم الهاتف");
+    
+    // التحقق من أن رقم الهاتف مصري صحيح ومكون من 11 رقماً ويبدأ بـ 01
+    const phoneRegex = /^01[0125][0-9]{8}$/;
+    if (!phoneRegex.test(phone)) {
+      return alert("يرجى إدخال رقم هاتف مصري صحيح مكون من 11 رقم ويبدأ بـ 01 (مثال: 01012345678)");
+    }
+
     try {
       setBtnLoading(true);
       await createEnrollment({ phone, courseId: course.id }, token);
