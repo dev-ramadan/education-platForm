@@ -26,12 +26,11 @@ export const login = async (data) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
         throw new Error("الاميل او كلمة المرور خاطئة", { cause: 401 });
-    const token = jwt.sign({ id: user.id, name: user.name, email: user.email, role: user.role }, process.env.JWT_SECRET || "secret", { expiresIn: "7d" })
-    console.log(user.id);
+    const token = jwt.sign({ id:user.id,name: user.name, email: user.email, role: user.role }, process.env.JWT_SECRET || "secret", { expiresIn: "7d" })
     
     return {
         token,
-        name: user.name, email: user.email, role: user.role
+        name: user.name, email: user.email, role: user.role 
     }
 };
 
@@ -42,7 +41,7 @@ export const getUsers = async () => {
 }
 // get getInstructorById 
 export const getInstructorById = async (data) => {
-    const { id } = data.params
+    const {id} = data.params
     const user = await User.findByPk(id);
     return user
 }
