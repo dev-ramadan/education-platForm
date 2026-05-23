@@ -4,8 +4,8 @@ import Quiz from "../db/models/Quiz.js";
 
 // get all qizes
 export const getQuiz = async (data) => {
-    const {courseId} = data.params;
-    const quiz = await Quiz.findAll({where:{courseId}});
+    const { courseId } = data.params;
+    const quiz = await Quiz.findAll({ where: { courseId } });
     return quiz;
 };
 
@@ -14,7 +14,7 @@ export const getSingleQuiz = async (data) => {
     const { id } = data.params;
     const quiz = await Quiz.findOne({
         where: { id },
-        include:[{model:Question}]
+        include: [{ model: Question }]
     });
 
     if (!quiz) {
@@ -28,15 +28,15 @@ export const getSingleQuiz = async (data) => {
 export const addQuiz = async (data) => {
     const { role, id } = data.user;
 
-    if (role !== "admin") {
+    if (role !== "instructor" || role !== "admin") {
         throw Error("غير مسموح يجب الحصول علي صلاحيات المعلم", { cause: 403 });
     }
 
     const quiz = await Quiz.create({
         title: data.body.title,
-        description: data.body.description,
+        description: data.body.description || "",
         courseId: data.body.courseId,
-        duration: data.body.time, 
+        duration: data.body.time,
         instructorId: id
     });
 

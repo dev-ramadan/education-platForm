@@ -26,6 +26,7 @@ const bootstrap = (app, express) => {
   app.use("/api", enrollmentRouter);
   app.use("/api", resultRouter);
 
+
   // ✅ Error handler
   app.use(errorHandel);
 };
