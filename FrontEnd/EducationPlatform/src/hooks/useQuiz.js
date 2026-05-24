@@ -40,16 +40,24 @@ export default function useQuiz(activeItem, activeType) {
 
   const handleSubmit = async () => {
     if (quizSubmitted || !activeItem) return;
-    let score = 0;
-    activeItem.Questions?.forEach((q) => {
+    let correctCount = 0;
+    const questions = activeItem.Questions || [];
+    const totalQuestions = questions.length;
+
+    questions.forEach((q) => {
       const selectedOptionId = answers[q.id];
       const correctOption = q.Options?.find((o) => o.correct_answer);
-      if (selectedOptionId && correctOption && selectedOptionId === correctOption.id) score += 1;
+      if (selectedOptionId && correctOption && selectedOptionId === correctOption.id) {
+        correctCount += 1;
+      }
     });
-    setQuizScore(score);
+
+    const percentageScore = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+
+    setQuizScore(correctCount);
     setQuizSubmitted(true);
     try {
-      await saveQuizResult({ quizId: activeItem.id, score }, token);
+      await saveQuizResult({ quizId: activeItem.id, score: percentageScore }, token);
     } catch (err) {
       console.error("Failed to save quiz result:", err);
     }

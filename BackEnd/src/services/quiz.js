@@ -28,7 +28,7 @@ export const getSingleQuiz = async (data) => {
 export const addQuiz = async (data) => {
     const { role, id } = data.user;
 
-    if (role !== "instructor" || role !== "admin") {
+    if (role !== "instructor" && role !== "admin") {
         throw Error("غير مسموح يجب الحصول علي صلاحيات المعلم", { cause: 403 });
     }
 

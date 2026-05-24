@@ -38,9 +38,12 @@ export default function QuizSection({
         <div className="bg-gradient-to-br from-indigo-600 to-purple-600 p-8 rounded-3xl text-white shadow-xl mb-8 text-center animate-slide-up">
           <div className="text-5xl mb-4">🏆</div>
           <h2 className="text-2xl font-black mb-2">نتيجة الامتحان</h2>
-          <p className="text-5xl font-black mb-4">
+          <p className="text-5xl font-black mb-2">
             {quizScore}{" "}
             <span className="text-2xl text-purple-200">/ {quiz.Questions?.length || 0}</span>
+          </p>
+          <p className="text-2xl font-black text-purple-100 mb-4">
+            النسبة المئوية: {quiz.Questions?.length > 0 ? Math.round((quizScore / quiz.Questions.length) * 100) : 0}%
           </p>
           <p className="text-purple-100">
             {quizScore === quiz.Questions?.length

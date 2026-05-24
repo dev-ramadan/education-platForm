@@ -102,7 +102,7 @@ export default function StudentProfile() {
                           </td>
                           <td className="p-4 text-center">
                             <span className="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-lg font-black">
-                              {result.score}
+                              {result.score}%
                             </span>
                           </td>
                           <td className="p-4 text-sm text-slate-500">

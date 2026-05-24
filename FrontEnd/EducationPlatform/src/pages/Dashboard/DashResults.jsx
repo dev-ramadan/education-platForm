@@ -74,6 +74,8 @@ export default function DashResults() {
 
   // Grade helper based on score (assuming out of 100)
   const getGradeBadge = (score) => {
+    console.log(score);
+    
     if (score >= 85) {
       return (
         <span className="px-3 py-1 text-xs font-black rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
