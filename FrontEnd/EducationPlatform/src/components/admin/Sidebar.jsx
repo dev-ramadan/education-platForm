@@ -5,8 +5,10 @@ export default function Sidebar({ isOpen, onClose }) {
 
   const links = [
     { name: "الرئيسية", path: "/dashboard" },
+    { name: "التحليلات والإحصائيات", path: "/dashboard/analytics" },
     { name: "إدارة الكورسات", path: "/dashboard/addCourse" },
     { name: "الطلاب", path: "/dashboard/students" },
+    { name: "نتائج الطلاب", path: "/dashboard/results" },
     { name: "الطلبات", path: "/dashboard/orders" },
     { name: "الامتحانات", path: "/dashboard/addQuiz" },
   ];

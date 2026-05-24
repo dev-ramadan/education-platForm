@@ -9,6 +9,7 @@ import { questionRouter } from "./routes/question.js";
 import { quizRouter } from "./routes/quiz.js";
 import { userRouter } from "./routes/user.js";
 import { resultRouter } from "./routes/result.js";
+import { dashboardRouter } from "./routes/dashboard.js";
 
 import { errorHandel } from "./utils/errorHandeler.js";
 
@@ -25,6 +26,7 @@ const bootstrap = (app, express) => {
   app.use("/api", optionRouter);
   app.use("/api", enrollmentRouter);
   app.use("/api", resultRouter);
+  app.use("/api", dashboardRouter);
 
   // ✅ Error handler
   app.use(errorHandel);

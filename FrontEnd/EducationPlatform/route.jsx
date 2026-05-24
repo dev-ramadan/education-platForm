@@ -13,6 +13,8 @@ import CourseDetails from "./src/pages/CourseDetails";
 import Enrollments from "./src/pages/Dashboard/DashOrder";
 import DashStudents from "./src/pages/Dashboard/DashStudents";
 import StudentProfile from "./src/pages/StudentProfile";
+import DashResults from "./src/pages/Dashboard/DashResults";
+import DashAnalytics from "./src/pages/Dashboard/DashAnalytics";
 
 // 🔒 Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -48,6 +50,8 @@ export const router = createBrowserRouter(createRoutesFromElements(
             <Route path="addCourse" element={<DashCourse />} />
             <Route path="orders" element={<Enrollments />} />
             <Route path="addQuiz" element={<DashQuiz />} />
+            <Route path="results" element={<DashResults />} />
+            <Route path="analytics" element={<DashAnalytics />} />
         </Route>
     </>
 ))

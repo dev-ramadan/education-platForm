@@ -1,6 +1,7 @@
 import Result from "../db/models/Result.js";
 import Quiz from "../db/models/Quiz.js";
 import Course from "../db/models/Course.js";
+import User from "../db/models/User.js";
 
 // Add Result
 export const addResult = async (data) => {
@@ -42,3 +43,30 @@ export const getMyResults = async (data) => {
 
     return results;
 };
+
+// Get All Results (for admin/instructor)
+export const getAllResults = async (data) => {
+    const { role } = data.user;
+
+    if (role !== "admin" && role !== "instructor") {
+        throw Error("غير مسموح", { cause: 403 });
+    }
+
+    const results = await Result.findAll({
+        include: [
+            { 
+                model: User, 
+                attributes: ["name", "email"] 
+            },
+            { 
+                model: Quiz, 
+                attributes: ["title", "duration"],
+                include: [{ model: Course, attributes: ["title", "id"] }]
+            }
+        ],
+        order: [["createdAt", "DESC"]]
+    });
+
+    return results;
+};
+
