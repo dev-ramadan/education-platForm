@@ -86,7 +86,9 @@ export const approveEnrollment = async (data) => {
     await sendWhatsApp(
         toWhatsApp(`+20${enrollment.phone}`),
         `🎉 تم قبول طلبك في كورس ${enrollment.Course.title}`
+        
     );
+    console.log(enrollment.phone);
 
     return enrollment;
 };
