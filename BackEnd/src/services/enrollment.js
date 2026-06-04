@@ -1,52 +1,68 @@
 import Course from "../db/models/Course.js";
 import Enrollment from "../db/models/Enrollment.js";
 import User from "../db/models/User.js";
+import { formatPhone, sendWhatsApp, toWhatsApp } from "../utils/whatsapp.js";
+
 
 // 🧑‍🎓 1. الطالب يطلب Enrollment
 export const requestEnrollment = async (data) => {
     const { id } = data.user;
-    const { courseId,phone } = data.body;
+    const { courseId, phone } = data.body;
 
-    // تأكد إن الكورس موجود
+    const cleanPhone = formatPhone(phone);
+
+    // التأكد من وجود الكورس
     const course = await Course.findByPk(courseId);
-    if (!course) {
-        throw Error("المادة غير موجودة");
-    }
+    if (!course) throw Error("المادة غير موجودة");
 
     // منع التكرار
     const exist = await Enrollment.findOne({
         where: { userId: id, courseId }
     });
 
-    if (exist) {
-        throw Error("تم إرسال طلب مسبقًا");
-    }
+    if (exist) throw Error("تم إرسال طلب مسبقًا");
 
+    // إنشاء الطلب
     const enrollment = await Enrollment.create({
         userId: id,
         courseId,
-        phone,
+        phone: cleanPhone,
         status: "pending"
     });
 
+    // 📩 رسالة للطالب
+    await sendWhatsApp(
+        toWhatsApp(`+20${cleanPhone}`),
+        `📩 تم استلام طلب الاشتراك في ${course.title}\nوجاري المراجعة`
+    );
+
+    // 🚀 رسالة للأدمن
+    await sendWhatsApp(
+        process.env.ADMIN_PHONE,
+        `🚀 طلب اشتراك جديد\n📚 ${course.title}\n📱 +20${cleanPhone}`
+    );
+
     return enrollment;
 };
-// 🧑‍💼 2. المدير يشوف الطلبات
+
+
+// 🧑‍💼 2. الأدمن يشوف الطلبات
 export const getPendingEnrollments = async (data) => {
     const { role } = data.user;
-    if (role !== "admin"  ) {
+
+    if (role !== "admin") {
         throw Error("غير مسموح");
     }
-    const requests = await Enrollment.findAll({
+
+    return await Enrollment.findAll({
         include: [
-            { model: User,attributes:{exclude:["id","password","role"]} },
-            { model: Course , attributes: ["title", "price"],}
-            
+            { model: User, attributes: { exclude: ["id", "password", "role"] } },
+            { model: Course, attributes: ["title", "price"] }
         ]
     });
-
-    return requests;
 };
+
+
 // ✅ 3. قبول الطلب
 export const approveEnrollment = async (data) => {
     const { role } = data.user;
@@ -57,17 +73,25 @@ export const approveEnrollment = async (data) => {
 
     const { enrollmentId } = data.params;
 
-    const enrollment = await Enrollment.findByPk(enrollmentId);
+    const enrollment = await Enrollment.findByPk(enrollmentId, {
+        include: [Course]
+    });
 
-    if (!enrollment) {
-        throw Error("غير موجود");
-    }
+    if (!enrollment) throw Error("غير موجود");
 
     enrollment.status = "active";
     await enrollment.save();
 
+    // 🎉 رسالة للطالب
+    await sendWhatsApp(
+        toWhatsApp(`+20${enrollment.phone}`),
+        `🎉 تم قبول طلبك في كورس ${enrollment.Course.title}`
+    );
+
     return enrollment;
 };
+
+
 // ❌ 4. رفض الطلب
 export const rejectEnrollment = async (data) => {
     const { role } = data.user;
@@ -78,24 +102,31 @@ export const rejectEnrollment = async (data) => {
 
     const { enrollmentId } = data.params;
 
-    const enrollment = await Enrollment.findByPk(enrollmentId);
+    const enrollment = await Enrollment.findByPk(enrollmentId, {
+        include: [Course]
+    });
 
-    if (!enrollment) {
-        throw Error("غير موجود");
-    }
+    if (!enrollment) throw Error("غير موجود");
 
     enrollment.status = "rejected";
     await enrollment.save();
 
+    // ❌ رسالة للطالب
+    await sendWhatsApp(
+        toWhatsApp(`+20${enrollment.phone}`),
+        `❌ تم رفض طلبك في كورس ${enrollment.Course.title}`
+    );
+
     return enrollment;
 };
+
+
 // 🎓 5. جلب كورسات الطالب
 export const getMyCourses = async (data) => {
     const { id } = data.user;
-    
-      const { courseId } = data.params;
+    const { courseId } = data.params;
 
-    const enrollments = await Enrollment.findAll({
+    return await Enrollment.findAll({
         where: {
             userId: id,
             courseId,
@@ -103,10 +134,10 @@ export const getMyCourses = async (data) => {
         },
         include: [Course]
     });
-
-    return enrollments;
 };
 
+
+// 📊 6. حالة كورسات الطالب
 export const getStudentCoursesStatus = async (data) => {
     const { id } = data.user;
 
@@ -122,23 +153,27 @@ export const getStudentCoursesStatus = async (data) => {
     }));
 };
 
+
+// 📈 7. تحديث التقدم
 export const updateProgress = async (data) => {
     const { id } = data.user;
     const { courseId, lessonId } = data.body;
 
     const enrollment = await Enrollment.findOne({
-        where: { userId: id, courseId, status: "active" }
+        where: {
+            userId: id,
+            courseId,
+            status: "active"
+        }
     });
 
     if (!enrollment) throw Error("غير مسجل في هذا الكورس");
 
     let completed = enrollment.completedLessons || [];
-    if (!Array.isArray(completed)) completed = []; 
+    if (!Array.isArray(completed)) completed = [];
 
     if (!completed.includes(lessonId)) {
-        // Create a new array reference to ensure Sequelize detects the change
-        const newCompleted = [...completed, lessonId];
-        enrollment.completedLessons = newCompleted;
+        enrollment.completedLessons = [...completed, lessonId];
         await enrollment.save();
     }
 
