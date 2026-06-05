@@ -11,15 +11,17 @@ export const formatPhone = (phone) => {
 
     phone = phone.toString().replace(/\D/g, "");
 
+    // لو الرقم فيه +20 أو 20 مسبقًا
+    if (phone.startsWith("20")) {
+        return phone;
+    }
+
+    // لو مصري 0
     if (phone.startsWith("0")) {
         phone = phone.slice(1);
     }
 
-    if (!phone.startsWith("20")) {
-        phone = "20" + phone;
-    }
-
-    return phone;
+    return "20" + phone;
 };
 
 // 🔥 تحويله لصيغة WhatsApp (للإرسال فقط)
@@ -42,9 +44,11 @@ export const toWhatsApp = (phone) => {
 // 🔥 إرسال الرسالة
 export const sendWhatsApp = async (to, message) => {
     try {
+        const formattedTo = toWhatsApp(to);
+
         const res = await client.messages.create({
             from: process.env.TWILIO_WHATSAPP_NUMBER,
-            to, // ❗ مهم: مفيش تحويل هنا
+            to: formattedTo,
             body: message,
         });
 
