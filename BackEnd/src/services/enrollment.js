@@ -1,7 +1,7 @@
 import Course from "../db/models/Course.js";
 import Enrollment from "../db/models/Enrollment.js";
 import User from "../db/models/User.js";
-import { formatPhone, sendWhatsApp, toWhatsApp } from "../utils/whatsapp.js";
+import { formatPhone, sendWhatsApp } from "../utils/whatsapp.js";
 
 
 // 🧑‍🎓 1. الطالب يطلب Enrollment
@@ -29,14 +29,14 @@ export const requestEnrollment = async (data) => {
 
     // 📩 رسالة للطالب
     await sendWhatsApp(
-        toWhatsApp(cleanPhone),
+        cleanPhone,
         `📩 تم استلام طلب الاشتراك في ${course.title}\nوجاري المراجعة`
     );
 
     // 🚀 رسالة للأدمن
     await sendWhatsApp(
         process.env.ADMIN_PHONE,
-        `🚀 طلب اشتراك جديد\n📚 ${course.title}\n📱 +20${cleanPhone}`
+        `🚀 طلب اشتراك جديد\n📚 ${course.title}\n📱 +${cleanPhone}`
     );
 
     return enrollment;
@@ -81,7 +81,7 @@ export const approveEnrollment = async (data) => {
 
     // 🎉 رسالة للطالب
     await sendWhatsApp(
-        toWhatsApp(enrollment.phone),
+        enrollment.phone,
         `🎉 تم قبول طلبك في كورس ${enrollment.Course.title}`
     );
 
@@ -110,7 +110,7 @@ export const rejectEnrollment = async (data) => {
 
     // ❌ رسالة للطالب
     await sendWhatsApp(
-        toWhatsApp(enrollment.phone),
+        enrollment.phone,
         `❌ تم رفض طلبك في كورس ${enrollment.Course.title}`
     );
 

@@ -9,46 +9,51 @@ const client = twilio(
 export const formatPhone = (phone) => {
     if (!phone) return "";
 
-    phone = phone.toString().replace(/\D/g, "");
+    // 1. تحويل النص وإبقاء الأرقام فقط
+    let cleaned = phone.toString().replace(/\D/g, "");
 
-    // لو الرقم فيه +20 أو 20 مسبقًا
-    if (phone.startsWith("20")) {
-        return phone;
+    // 2. معالجة حالة البدء بـ 0020
+    if (cleaned.startsWith("0020")) {
+        cleaned = cleaned.slice(2);
     }
 
-    // لو مصري 0
-    if (phone.startsWith("0")) {
-        phone = phone.slice(1);
+    // 3. معالجة الأرقام المصرية التي تبدأ بـ 01 (طولها 11 رقم: مثل 01012345678)
+    if (cleaned.startsWith("01") && cleaned.length === 11) {
+        cleaned = "20" + cleaned.slice(1);
+    }
+    // 4. معالجة الأرقام المصرية التي تبدأ بـ 1 (طولها 10 أرقام: مثل 1012345678)
+    else if ((cleaned.startsWith("10") || cleaned.startsWith("11") || cleaned.startsWith("12") || cleaned.startsWith("15")) && cleaned.length === 10) {
+        cleaned = "20" + cleaned;
+    }
+    // 5. إذا كان الرقم يبدأ بالفعل بـ 20 وطوله 12 رقمًا (تنسيق صحيح بالرمز الدولي)
+    else if (cleaned.startsWith("20") && cleaned.length === 12) {
+        // تنسيق صحيح بالفعل
+    }
+    // احتياطي (Fallback) لأي تنسيقات أخرى
+    else {
+        if (cleaned.startsWith("0")) {
+            cleaned = cleaned.slice(1);
+        }
+        if (!cleaned.startsWith("20")) {
+            cleaned = "20" + cleaned;
+        }
     }
 
-    return "20" + phone;
+    return cleaned;
 };
 
 // 🔥 تحويله لصيغة WhatsApp (للإرسال فقط)
 export const toWhatsApp = (phone) => {
     if (!phone) return "";
-
-    phone = phone.toString().replace(/\D/g, "");
-
-    if (phone.startsWith("0")) {
-        phone = phone.slice(1);
-    }
-
-    if (!phone.startsWith("20")) {
-        phone = "20" + phone;
-    }
-
-    return `whatsapp:+${phone}`;
+    const cleaned = formatPhone(phone);
+    return `whatsapp:+${cleaned}`;
 };
-
 // 🔥 إرسال الرسالة
 export const sendWhatsApp = async (to, message) => {
     try {
-        const formattedTo = toWhatsApp(to);
-
         const res = await client.messages.create({
             from: process.env.TWILIO_WHATSAPP_NUMBER,
-            to: formattedTo,
+            to: toWhatsApp(to), // التحويل هنا فقط
             body: message,
         });
 
