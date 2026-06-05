@@ -5,37 +5,50 @@ const client = twilio(
     process.env.TWILIO_AUTH_TOKEN
 );
 
-// 🔥 تنظيف الرقم
+// 🔥 تنظيف الرقم (للـ DB فقط)
 export const formatPhone = (phone) => {
     if (!phone) return "";
 
-    phone = phone.toString().trim();
+    phone = phone.toString().replace(/\D/g, "");
 
-    if (phone.startsWith("+20")) return phone.slice(3);
-    if (phone.startsWith("0020")) return phone.slice(4);
-    if (phone.startsWith("0")) return phone.slice(1);
+    if (phone.startsWith("0")) {
+        phone = phone.slice(1);
+    }
+
+    if (!phone.startsWith("20")) {
+        phone = "20" + phone;
+    }
 
     return phone;
 };
 
-// 🔥 توحيد صيغة واتساب
+// 🔥 تحويله لصيغة WhatsApp (للإرسال فقط)
 export const toWhatsApp = (phone) => {
     if (!phone) return "";
-    if (phone.startsWith("whatsapp:")) return phone;
 
-    return `whatsapp:${phone}`;
+    phone = phone.toString().replace(/\D/g, "");
+
+    if (phone.startsWith("0")) {
+        phone = phone.slice(1);
+    }
+
+    if (!phone.startsWith("20")) {
+        phone = "20" + phone;
+    }
+
+    return `whatsapp:+${phone}`;
 };
 
-// 🔥 إرسال رسالة
+// 🔥 إرسال الرسالة
 export const sendWhatsApp = async (to, message) => {
     try {
-        await client.messages.create({
+        const res = await client.messages.create({
             from: process.env.TWILIO_WHATSAPP_NUMBER,
-            to: toWhatsApp(to),
+            to, // ❗ مهم: مفيش تحويل هنا
             body: message,
         });
 
-        console.log("✅ WhatsApp sent");
+        console.log("✅ WhatsApp sent:", res.sid);
     } catch (err) {
         console.error("❌ WhatsApp error:", err.message);
     }

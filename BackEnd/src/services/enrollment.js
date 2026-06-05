@@ -11,18 +11,15 @@ export const requestEnrollment = async (data) => {
 
     const cleanPhone = formatPhone(phone);
 
-    // التأكد من وجود الكورس
     const course = await Course.findByPk(courseId);
     if (!course) throw Error("المادة غير موجودة");
 
-    // منع التكرار
     const exist = await Enrollment.findOne({
         where: { userId: id, courseId }
     });
 
     if (exist) throw Error("تم إرسال طلب مسبقًا");
 
-    // إنشاء الطلب
     const enrollment = await Enrollment.create({
         userId: id,
         courseId,
@@ -32,7 +29,7 @@ export const requestEnrollment = async (data) => {
 
     // 📩 رسالة للطالب
     await sendWhatsApp(
-        toWhatsApp(`+20${cleanPhone}`),
+        toWhatsApp(cleanPhone),
         `📩 تم استلام طلب الاشتراك في ${course.title}\nوجاري المراجعة`
     );
 
@@ -84,11 +81,9 @@ export const approveEnrollment = async (data) => {
 
     // 🎉 رسالة للطالب
     await sendWhatsApp(
-        toWhatsApp(`+20${enrollment.phone}`),
+        toWhatsApp(enrollment.phone),
         `🎉 تم قبول طلبك في كورس ${enrollment.Course.title}`
-        
     );
-    console.log(enrollment.phone);
 
     return enrollment;
 };
@@ -115,7 +110,7 @@ export const rejectEnrollment = async (data) => {
 
     // ❌ رسالة للطالب
     await sendWhatsApp(
-        toWhatsApp(`+20${enrollment.phone}`),
+        toWhatsApp(enrollment.phone),
         `❌ تم رفض طلبك في كورس ${enrollment.Course.title}`
     );
 
@@ -123,7 +118,7 @@ export const rejectEnrollment = async (data) => {
 };
 
 
-// 🎓 5. جلب كورسات الطالب
+// 🎓 باقي الفانكشنز زي ما هي (بدون تغيير)
 export const getMyCourses = async (data) => {
     const { id } = data.user;
     const { courseId } = data.params;
@@ -138,8 +133,6 @@ export const getMyCourses = async (data) => {
     });
 };
 
-
-// 📊 6. حالة كورسات الطالب
 export const getStudentCoursesStatus = async (data) => {
     const { id } = data.user;
 
@@ -155,8 +148,6 @@ export const getStudentCoursesStatus = async (data) => {
     }));
 };
 
-
-// 📈 7. تحديث التقدم
 export const updateProgress = async (data) => {
     const { id } = data.user;
     const { courseId, lessonId } = data.body;
